@@ -1,0 +1,98 @@
+<!--
+  KPTZ Live Player — Wix "HTML iframe" embed snippet
+  ====================================================
+  In Wix Editor:
+    1. Add Element → Embed → HTML iframe  (or "Embed Code")
+    2. Paste this entire block into the editor
+    3. Adjust the playerUrl variable to your GitHub Pages URL
+    4. Size the iframe element to roughly 160px wide × 48px tall
+       (just enough for the button)
+
+  The button opens the player in a named pop-out window.
+  If the listener clicks it again, the existing window is focused
+  rather than opening a second instance — the stream keeps playing.
+-->
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .listen-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #8b1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .listen-btn:hover { background: #a82020; }
+  .listen-btn:active { background: #701414; }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff7070;
+    flex-shrink: 0;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+</style>
+
+<button class="listen-btn" onclick="openPlayer()" title="Open KPTZ live player">
+  <span class="live-dot"></span>
+  Listen Live
+</button>
+
+<script>
+  // ── Edit this to match your GitHub Pages URL ──
+  var playerUrl = 'https://YOUR-GITHUB-USERNAME.github.io/kptz-player/player.html';
+
+  // Pop-out window dimensions
+  var width  = 320;
+  var height = 380;
+
+  function openPlayer() {
+    // Center on screen
+    var left = Math.round((screen.width  - width)  / 2);
+    var top  = Math.round((screen.height - height) / 2);
+
+    var features = [
+      'width='  + width,
+      'height=' + height,
+      'left='   + left,
+      'top='    + top,
+      'resizable=yes',
+      'scrollbars=no',
+      'toolbar=no',
+      'menubar=no',
+      'location=no',
+      'status=no',
+    ].join(',');
+
+    // 'kptz-player' is the window name — clicking again focuses
+    // the existing window rather than spawning a second one
+    var win = window.open(playerUrl, 'kptz-player', features);
+    if (win) win.focus();
+  }
+</script>
