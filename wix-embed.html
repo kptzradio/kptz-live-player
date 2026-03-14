@@ -4,7 +4,7 @@
   In Wix Editor:
     1. Add Element → Embed → HTML iframe  (or "Embed Code")
     2. Paste this entire block into the editor
-    3. Adjust the playerUrl variable to your GitHub Pages URL
+    3. Adjust the two URL variables in the <script> below
     4. Size the iframe element to roughly 160px wide × 48px tall
        (just enough for the button)
 
@@ -12,7 +12,7 @@
               If the listener clicks it again, the existing window
               is focused rather than opening a second instance and
               the stream keeps playing.
-  On mobile:  links directly to the stream URL so the device's
+  On mobile:  navigates directly to the stream URL so the device's
               native media player handles playback.
 -->
 
@@ -68,8 +68,11 @@
 </button>
 
 <script>
-  // ── Edit this to match your GitHub Pages URL ──
+  // Full player (desktop pop-out)
   var playerUrl = 'https://kptzradio.github.io/kptz-live-player/player.html';
+
+  // Direct stream URL (mobile fallback) -- opens in native media player
+  var streamUrl = 'https://kptz.streamguys1.com/live-aac';
 
   // Pop-out window dimensions
   var width  = 320;
@@ -82,9 +85,16 @@
 
   function openPlayer() {
     if (isMobile()) {
-      // On mobile, link directly to the stream so the device's
-      // native media player handles it cleanly
-      window.open(streamUrl, '_blank');
+      // window.open() is typically blocked by mobile browsers inside a sandboxes iframe.
+      // Creating and clicking a temporary <a> tag is treated as a direct user-gesture
+      // navigation and is never blocked.
+      var a = document.createElement('a');
+      a.href = streamUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
       return;
     }
 
