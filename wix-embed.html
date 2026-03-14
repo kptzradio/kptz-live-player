@@ -8,9 +8,12 @@
     4. Size the iframe element to roughly 160px wide × 48px tall
        (just enough for the button)
 
-  The button opens the player in a named pop-out window.
-  If the listener clicks it again, the existing window is focused
-  rather than opening a second instance — the stream keeps playing.
+  On desktop: Opens the full player in a named pop-out window.
+              If the listener clicks it again, the existing window
+              is focused rather than opening a second instance and
+              the stream keeps playing.
+  On mobile:  links directly to the stream URL so the device's
+              native media player handles playback.
 -->
 
 <style>
@@ -72,8 +75,20 @@
   var width  = 320;
   var height = 380;
 
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent)
+      || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)); // iPad OS
+  }
+
   function openPlayer() {
-    // Center on screen
+    if (isMobile()) {
+      // On mobile, link directly to the stream so the device's
+      // native media player handles it cleanly
+      window.open(streamUrl, '_blank');
+      return;
+    }
+
+    // Desktop: open the full player in a named pop-out window
     var left = Math.round((screen.width  - width)  / 2);
     var top  = Math.round((screen.height - height) / 2);
 
