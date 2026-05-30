@@ -588,7 +588,16 @@
       trackTitle.textContent = spin.song || 'Unknown track';
       trackTitle.classList.remove('muted');
       trackArtist.textContent = spin.artist || '';
-      trackAlbum.textContent = spin.release || '';
+
+      // Prefer explicit release year fields, fall back to parsing a release_date
+      const release = spin.release || '';
+      let year = spin.release_year || spin.year;
+      if (!year && spin.release_date) {
+        const d = new Date(spin.release_date);
+        if (!isNaN(d)) year = d.getFullYear();
+      }
+      const formattedAlbum = release ? (release + (year ? ` (${year})` : '')) : '';
+      trackAlbum.textContent = formattedAlbum || '';
 
       // Album art
       const artUrl = spin.image;
@@ -596,7 +605,7 @@
       if (artUrl) {
         const img = document.createElement('img');
         img.src = artUrl;
-        img.alt = `${spin.release || spin.song} cover art`;
+        img.alt = `${formattedAlbum || spin.song} cover art`;
         img.onerror = () => showArtPlaceholder();
         albumArtBox.appendChild(img);
       } else {
