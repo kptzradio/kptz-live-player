@@ -597,9 +597,16 @@
 
       // Prefer explicit release year fields, fall back to parsing a release_date
       const release = spin.release || '';
-      let year = spin.release_year || spin.year;
+      // Spinitron may provide the release year under different keys.
+      // Check common fields: `release_year`, `year`, `released`, or a `release_date` string.
+      let year = spin.release_year || spin.year || spin.released;
       if (!year && spin.release_date) {
         const d = new Date(spin.release_date);
+        if (!isNaN(d)) year = d.getFullYear();
+      }
+      // If year is a full date string (rare), extract the year component
+      if (typeof year === 'string' && /^\d{4}-\d{2}-\d{2}/.test(year)) {
+        const d = new Date(year);
         if (!isNaN(d)) year = d.getFullYear();
       }
       const formattedAlbum = release ? (release + (year ? ` (${year})` : '')) : '';
