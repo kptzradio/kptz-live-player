@@ -585,6 +585,8 @@
       if (spin.id === currentSpinId) return;
       currentSpinId = spin.id;
 
+      // Debug: log spin data to help diagnose missing year
+      console.debug('updateTrackInfo spin:', spin);
       trackTitle.textContent = spin.song || 'Unknown track';
       trackTitle.classList.remove('muted');
       trackArtist.textContent = spin.artist || '';
@@ -597,6 +599,7 @@
         if (!isNaN(d)) year = d.getFullYear();
       }
       const formattedAlbum = release ? (release + (year ? ` (${year})` : '')) : '';
+      console.debug('formattedAlbum:', formattedAlbum, 'release:', release, 'year:', year);
       trackAlbum.textContent = formattedAlbum || '';
 
       // Album art
